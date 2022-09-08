@@ -5,7 +5,7 @@ const restaurant = {
     location: "Opposite rangeeli mandap, behind petrol pump",
     categories: ["Italian", "Vegetarian", "Pizzeria"],
     starterMenu: ["Garlic Bread", "Salad", "Toast"],
-    mainMenu: ["Pizza", "Pasta"],
+    mainMenu: ["Pizza", "Pasta", "Risotto"],
     openingHours: {
         thu: {
             open: 12,
@@ -32,8 +32,44 @@ const restaurant = {
 
     orderDelivery: function ({starterIndex = 1, mainIndex = 0, time = "20:00", address}) {
         console.log(`Delivery confirmed! ${this.starterMenu[starterIndex]} and ${this.mainMenu[mainIndex]} will be delivered to ${address} at ${time}`);
+    },
+
+    orderPizza: function (firstIngredient, ...otherIngredients) {
+        console.log(firstIngredient);
+        console.log(otherIngredients);
     }
 };
+
+restaurant.orderPizza("mushrooms", "olives", "spinach", "corn");
+
+// SPREAD, because on right side of assignment operator
+const arr = [1, 2, ...[3, 4]];
+console.log(arr);
+
+// REST pattern on left side =>
+const [one, two, ...others] = [1, 2,3, 4, 5];
+console.log(one, two, others);
+
+// i want only 1st and 3rd from main menu and store other items from starters in array
+const [pizza, , risotto, ...otherFood] = [...restaurant.mainMenu, ...restaurant.starterMenu];
+console.log(pizza, risotto, otherFood);
+
+const {sat, ...weekdays} = restaurant.openingHours; 
+console.log(weekdays);
+
+const add = function (...numbers) {// rest pattern converts incoming values into array OR "packs" incoming array values into array
+    let sum = 0;
+    for (let i = 0; i < numbers.length; i++) {
+        sum += numbers[i];
+    }
+    console.log(sum);
+}
+
+add(2, 3);
+add(1, 2, 4, 5);
+
+const addArrayExample = [10, 11, 12];
+add(...addArrayExample);
 
 restaurant.orderDelivery({
     time: "22:30",
@@ -42,7 +78,7 @@ restaurant.orderDelivery({
     address: "Local Market, Sunshine road"
 })
 
-const arr = [2, 3, 4];
+// const arr = [2, 3, 4];
 const [x, y, z] = arr; // distructuring array here these are all variables
 console.log(x, y, z);
 
