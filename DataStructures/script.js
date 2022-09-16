@@ -40,35 +40,6 @@ const restaurant = {
     }
 };
 
-// Strings concept=>
-const airline = "TAP Air Portugal";
-const plane = "A319";
-
-console.log(plane[0]);
-console.log(plane[2]);
-console.log("B211"[0]);
-console.log(airline.length);
-console.log("B211".length);
-
-console.log(airline.indexOf("r"));
-console.log(airline.lastIndexOf("r"));
-
-// below is case sensitive i.e will return -1 if i write indexOf("portugal")
-console.log(airline.indexOf("Portugal"));
-
-console.log(airline.slice(4));
-console.log(airline.slice(4, 8));
-
-
-
-
-
-
-
-
-
-
-
 restaurant.orderPizza("mushrooms", "olives", "spinach", "corn");
 
 // SPREAD, because on right side of assignment operator
