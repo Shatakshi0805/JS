@@ -61,21 +61,30 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-// const displayMovements = function (movements) {
-//   containerMovements.innerHTML = "";
-//   movements.forEach(function (mov, i) {
-//     const type = mov > 0 ? 'deposit' : 'withdrawal';
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = "";
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
 
-//     const html = `<div class="movements__row">
-//     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-//     <div class="movements__value">${mov}</div>
-//   </div>`
+    const html = `<div class="movements__row">
+    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+    <div class="movements__value">${mov}</div>
+  </div>`
 
-//   containerMovements.insertAdjacentHTML('afterbegin', html);
-//   })
-// }
-// displayMovements(account1.movements);
+  containerMovements.insertAdjacentHTML('afterbegin', html);
+  })
+}
+displayMovements(account1.movements);
 
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce(function (acc, cur, i, movements) {
+    return acc + cur;
+  })
+  labelBalance.textContent = `${balance} EUR`
+}
+calcDisplayBalance(account1.movements);
+
+// CREATES USERNAMES LIKE => stw using initials of name
 const user = 'Steven Thomas Williams';
 const createusernames = function (accs) {
   accs.forEach(function (acc) {
@@ -87,6 +96,8 @@ const createusernames = function (accs) {
 
 
 createusernames(accounts);
+
+
 console.log(accounts);
 
 
@@ -98,15 +109,8 @@ console.log(accounts);
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const deposits = movements.filter(function (mov) {
-  return mov > 0;
-})
-console.log(deposits);
 
-const withdrawals = movements.filter(function (mov) {
-  return mov < 0;
-})
-console.log(withdrawals);
+
 
 /////////////////////////////////////////////////
 // for of method
@@ -149,35 +153,59 @@ console.log("----------------------FOREACH---------------------");
 // })
 
 
-const currencies = new Map([
-    ['USD', 'United States dollar'],
-    ['EUR', 'Euro'],
-    ['GBP', 'Pound sterling'],
-  ]);
+// const currencies = new Map([
+//     ['USD', 'United States dollar'],
+//     ['EUR', 'Euro'],
+//     ['GBP', 'Pound sterling'],
+//   ]);
 
-currencies.forEach(function (value, key, map) {
-    console.log(`${key}: ${value}`);
-})
+// currencies.forEach(function (value, key, map) {
+//     console.log(`${key}: ${value}`);
+// })
 
-const currenciesUnique = new Set(['USD', 'EUR', 'GBP', 'EUR']);
-currenciesUnique.forEach(function (val, key, set) {// sets dont have indexes
-    console.log(`${key}: ${val}`);
-})
+// const currenciesUnique = new Set(['USD', 'EUR', 'GBP', 'EUR']);
+// currenciesUnique.forEach(function (val, key, set) {// sets dont have indexes
+//     console.log(`${key}: ${val}`);
+// })
 
-const euroToUSD = 1.1;
+// MAP METHOD =>
+// const euroToUSD = 1.1;
 
-const movementsUSD = movements.map(function (mov) {
-  return mov * euroToUSD;
-})
-console.log(movements);// original array
-console.log(movementsUSD);// new array from map function with applied oprn in callback funcn
+// const movementsUSD = movements.map(function (mov) {
+//   return mov * euroToUSD;
+// })
+// console.log(movements);// original array
+// console.log(movementsUSD);// new array from map function with applied oprn in callback funcn
 
-const movementDescriptions = movements.map(function (movement, i, arr) {
-  if (movement > 0) {
-        return `Movement ${i + 1}: You deposited ${movement} amount in your account`;
-    } else {
-        return `Movement ${i + 1}: You withdrew ${Math.abs(movement)} amount from your account`;
-    }
-})
+// const movementDescriptions = movements.map(function (movement, i, arr) {
+//   if (movement > 0) {
+//         return `Movement ${i + 1}: You deposited ${movement} amount in your account`;
+//     } else {
+//         return `Movement ${i + 1}: You withdrew ${Math.abs(movement)} amount from your account`;
+//     }
+// })
 
-console.log(movementDescriptions);
+// console.log(movementDescriptions);
+
+// filter method =>
+// const deposits = movements.filter(function (mov) {
+//   return mov > 0;
+// })
+// console.log(deposits);
+
+// const withdrawals = movements.filter(function (mov) {
+//   return mov < 0;
+// })
+// console.log(withdrawals);
+
+// accumulator necessary in reduce function
+// const balance = movements.reduce(function (acc, cur, i, arr) {// similar to finding sum of all array elements
+//   return acc + cur;
+// }, 0);// requires to pass initial value of acc 
+
+// console.log(balance);
+
+
+
+
+
