@@ -30,3 +30,17 @@ const calcAverageHumanAge = function (dogsAges) {
 
 calcAverageHumanAge([5,2,4,1,15,8,3]);
 calcAverageHumanAge([16,6,10,5,6,1,4]);
+
+// chaining=> reduce can be done in only way listed below
+const calcAverageHumanAgeChain = function (dogsAges) {
+    const humanAvg = dogsAges.map(age => {
+        if (age <= 2) {
+            (2 * age);
+        } else if (age > 2) {
+            (16 + (age * 4));
+        }}).filter(age => {
+            age >= 18
+        }).reduce((acc, age, humanAdults) => {
+            acc + age/humanAdults.length;
+        }, 0);
+}

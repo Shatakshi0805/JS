@@ -68,7 +68,7 @@ const displayMovements = function (movements) {
 
     const html = `<div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    <div class="movements__value">${mov}</div>
+    <div class="movements__value">${mov}€</div>
   </div>`
 
   containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -80,9 +80,35 @@ const calcDisplayBalance = function (movements) {
   const balance = movements.reduce(function (acc, cur, i, movements) {
     return acc + cur;
   })
-  labelBalance.textContent = `${balance} EUR`
+  labelBalance.textContent = `${balance}€`
 }
 calcDisplayBalance(account1.movements);
+
+const calcDisplaySummary = function (movements) {
+  const deposits = movements.filter(function (mov) {
+    return mov > 0;
+  });
+
+  const income = deposits.reduce(function (acc, deposit) {
+    return acc + deposit
+  }, 0);
+  labelSumIn.textContent = `${income}€`;
+
+  const out = movements.filter(function (mov) {
+    return mov < 0;
+  }).reduce(function (acc, mov) {
+    return acc + mov;
+  }, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  const interest = movements.filter(mov => mov > 0).map(mov => (mov * 1.2)/100).filter((interest, i, arr) => {
+    console.log(arr);
+    return interest >= 1;
+  }).reduce((acc, interest) => acc + interest, 0);
+  labelSumInterest.textContent = `${interest}€`
+  
+}
+calcDisplaySummary(account1.movements);
 
 // CREATES USERNAMES LIKE => stw using initials of name
 const user = 'Steven Thomas Williams';
@@ -204,6 +230,13 @@ console.log("----------------------FOREACH---------------------");
 // }, 0);// requires to pass initial value of acc 
 
 // console.log(balance);
+
+//FIND METHOD => returns first value from array that matches the specified condition
+const firstWithdrawal = movements.find(mov => mov < 0);
+console.log(firstWithdrawal);
+
+const account = accounts.find(acc => acc.owner === "Jessica Davis");
+console.log(account);
 
 
 
