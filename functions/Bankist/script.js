@@ -74,7 +74,7 @@ const displayMovements = function (movements) {
   containerMovements.insertAdjacentHTML('afterbegin', html);
   })
 }
-displayMovements(account1.movements);
+
 
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce(function (acc, cur, i, movements) {
@@ -82,10 +82,10 @@ const calcDisplayBalance = function (movements) {
   })
   labelBalance.textContent = `${balance}€`
 }
-calcDisplayBalance(account1.movements);
 
-const calcDisplaySummary = function (movements) {
-  const deposits = movements.filter(function (mov) {
+
+const calcDisplaySummary = function (account) {
+  const deposits = account.movements.filter(function (mov) {
     return mov > 0;
   });
 
@@ -94,21 +94,20 @@ const calcDisplaySummary = function (movements) {
   }, 0);
   labelSumIn.textContent = `${income}€`;
 
-  const out = movements.filter(function (mov) {
+  const out = account.movements.filter(function (mov) {
     return mov < 0;
   }).reduce(function (acc, mov) {
     return acc + mov;
   }, 0);
   labelSumOut.textContent = `${Math.abs(out)}€`;
 
-  const interest = movements.filter(mov => mov > 0).map(mov => (mov * 1.2)/100).filter((interest, i, arr) => {
+  const interest = account.movements.filter(mov => mov > 0).map(mov => (mov * account.interestRate)/100).filter((interest, i, arr) => {
     console.log(arr);
     return interest >= 1;
   }).reduce((acc, interest) => acc + interest, 0);
   labelSumInterest.textContent = `${interest}€`
   
 }
-calcDisplaySummary(account1.movements);
 
 // CREATES USERNAMES LIKE => stw using initials of name
 const user = 'Steven Thomas Williams';
@@ -122,9 +121,36 @@ const createusernames = function (accs) {
 
 
 createusernames(accounts);
-
-
 console.log(accounts);
+
+let currentAccount;
+// Event handler LOGIN function =>
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+  console.log(currentAccount);
+
+  // below ?. is also known as optional chaining
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {// ? is used to check if user exists or not 
+    // display UI and Message
+    labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(' ')[0]}`;
+    containerApp.style.opacity = 100;
+
+    // clear input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    // Display Movements
+    displayMovements(currentAccount.movements);
+
+    // Display balance
+    calcDisplayBalance(currentAccount.movements);
+
+    // Display summary
+    calcDisplaySummary(currentAccount);
+  }
+})
 
 
 /////////////////////////////////////////////////
