@@ -68,19 +68,21 @@ const displayMovements = function (movements) {
 
     const html = `<div class="movements__row">
     <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-    <div class="movements__value">${mov}€</div>
+    <div class="movements__value">₹${mov}</div>
   </div>`
 
   containerMovements.insertAdjacentHTML('afterbegin', html);
   })
 }
 
-
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce(function (acc, cur, i, movements) {
+// to check whhether current account has sufficient money to make transfer we need to check its balance, but it wasnt stored anywhere
+// so we store it as object's property to check easily if current account has enough money
+const calcDisplayBalance = function (acc) {
+  const balance = acc.movements.reduce(function (acc, cur, i, movements) {
     return acc + cur;
   })
-  labelBalance.textContent = `${balance}€`
+  acc.balance = balance;
+  labelBalance.textContent = `₹${balance}`
 }
 
 
@@ -92,20 +94,20 @@ const calcDisplaySummary = function (account) {
   const income = deposits.reduce(function (acc, deposit) {
     return acc + deposit
   }, 0);
-  labelSumIn.textContent = `${income}€`;
+  labelSumIn.textContent = `₹${income}`;
 
   const out = account.movements.filter(function (mov) {
     return mov < 0;
   }).reduce(function (acc, mov) {
     return acc + mov;
   }, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `₹${Math.abs(out)}`;
 
   const interest = account.movements.filter(mov => mov > 0).map(mov => (mov * account.interestRate)/100).filter((interest, i, arr) => {
     console.log(arr);
     return interest >= 1;
   }).reduce((acc, interest) => acc + interest, 0);
-  labelSumInterest.textContent = `${interest}€`
+  labelSumInterest.textContent = `₹${interest}`
   
 }
 
@@ -123,6 +125,17 @@ const createusernames = function (accs) {
 createusernames(accounts);
 console.log(accounts);
 
+const updateUI = function (acc) {
+  // Display Movements
+  displayMovements(acc.movements);
+
+  // Display balance
+  calcDisplayBalance(acc);
+
+  // Display summary
+  calcDisplaySummary(acc);
+}
+
 let currentAccount;
 // Event handler LOGIN function =>
 btnLogin.addEventListener('click', function (e) {
@@ -134,22 +147,43 @@ btnLogin.addEventListener('click', function (e) {
   // below ?. is also known as optional chaining
   if (currentAccount?.pin === Number(inputLoginPin.value)) {// ? is used to check if user exists or not 
     // display UI and Message
-    labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(' ')[0]}`;
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
     containerApp.style.opacity = 100;
 
     // clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
-    // Display Movements
-    displayMovements(currentAccount.movements);
-
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
-
-    // Display summary
-    calcDisplaySummary(currentAccount);
+    // update UI
+    updateUI(currentAccount);
   }
+})
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const transferTo = inputTransferTo.value;// stores name in which money would be tranfered
+  // console.log(transferTo);
+  const transferAmt = Number(inputTransferAmount.value);
+  // console.log(transferAmt);
+
+  const amtTransferAccount = accounts.find(acc => transferTo === acc.username);// loops through every value in accounts array and check whose username matches to the initials entered in form
+  console.log(amtTransferAccount, transferAmt);
+  
+  // check if amtTransferAccount exists, currentAccount needs to be greater than amt of transfer to be made, shouldnt make tranfer to my account
+  if (amtTransferAccount && currentAccount.balance >= transferAmt && transferAmt > 0 && 
+    amtTransferAccount.username !== currentAccount.username) {
+      currentAccount.movements.push(-transferAmt);
+      amtTransferAccount.movements.push(transferAmt);
+
+      // update UI
+    updateUI(currentAccount);
+  }
+
+  // clean entered values
+  inputTransferTo.value = "";
+  inputTransferAmount.value = "";
+
+
 })
 
 
