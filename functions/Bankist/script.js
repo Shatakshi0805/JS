@@ -159,6 +159,7 @@ btnLogin.addEventListener('click', function (e) {
   }
 })
 
+// MONEY TRANSFER METHOD =>
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const transferTo = inputTransferTo.value;// stores name in which money would be tranfered
@@ -182,8 +183,41 @@ btnTransfer.addEventListener('click', function (e) {
   // clean entered values
   inputTransferTo.value = "";
   inputTransferAmount.value = "";
+})
 
+// LOAN METHOD
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
 
+  const amount = Number(inputLoanAmount.value);// convert STRING to NUMBER
+  if (amount > 0 && currentAccount.movements.some(mov => mov > amount * 0.1)) {
+    currentAccount.movements.push(amount);
+
+    // UPDATE UI
+    updateUI(currentAccount);
+  }
+
+  inputLoanAmount.value = "";
+})
+// CLOSE CURRENT USER ACCOUNT => DELETING OBJECT FROM ACCOUNTS ARRAY
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  
+  if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
+    // FIND INDEX AT WHICH THE ELEMENT TO BE DELETED IS STORED => WORKS SAME AS FIND() METHOD CONCEPT
+    // INDEXOF() ONLY WORKS IF THAT VALUE IS PRESENT IN THE ARRAY AND WE CANT USE EXPRESSIONS IN IT
+    // BUT with FINDINDEX() WE CAN USE EXPRESSIONS INSIDE THE CALLBACK FUNCN OF FINDINDEX()
+    const index = accounts.findIndex(acc => acc.username === currentAccount.username);
+    
+    // DELETE ACCOUNT
+    accounts.splice(index, 1);
+    
+    // HIDE UI
+    containerApp.style.opacity = 0;
+
+    inputCloseUsername.value = inputClosePin.value = "";
+    labelWelcome.textContent = `Log in to get started`;
+  }
 })
 
 
@@ -297,6 +331,57 @@ console.log(firstWithdrawal);
 
 const account = accounts.find(acc => acc.owner === "Jessica Davis");
 console.log(account);
+
+// INCLUDES METHOD IS FOR EQUALITY
+console.log(movements.includes(-130));
+
+// SOME CHECKS IF THERE IS ANY VALUE IN ARRAY THAT MATCHES OUR CONDITION
+const anyDeposits = movements.some(mov => mov > 1500);
+console.log(anyDeposits);
+// ABOVE SOME METHOD WOULD BE USEFUL FOR TAKING LOAN AS WHILE LOAN WE HAVE A CONDITION THAT 
+//IF WE HAVE ANY MOVEMENT GREATER THAN 10% OF ENTERED LOAN AMOUNT BY USER
+
+//EVERY
+console.log(movements.every(mov => mov > 0));
+
+//FLAT method to flatten array consisting of nested arrays. argument can contain how many deeper level os nested 
+//array we want to flatten
+const arr1 = [[1,2,3], [4,5,6], 7, 8];
+console.log(arr1.flat());
+
+const arr2 = [[[1,2], 3], [4, [5,6]], 7, 8];
+// below method will give:
+// 0
+// : 
+// (2) [1, 2]
+// 1
+// : 
+// 3
+// 2
+// : 
+// 4
+// 3
+// : 
+// (2) [5, 6]
+// 4
+// : 
+// 7
+// 5
+// : 
+// 8
+// length
+// : 
+// 6
+console.log(arr2.flat());
+console.log(arr2.flat(2));//[1, 2, 3, 4, 5, 6, 7, 8]
+
+const overallBalance = accounts.map(acc => acc.movements).flat().reduce((acc, mov) => acc + mov);
+console.log(overallBalance);
+
+//FLATMAP was introduced for above map and flat method, but here flat will only work for 1 level deep flattening
+// for more levels flattening use original FLAT
+const totalBalance = accounts.flatMap(acc => acc.movements).reduce((acc, mov) => acc + mov);// same result as above
+console.log(totalBalance);
 
 
 
